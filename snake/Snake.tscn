@@ -14,9 +14,6 @@ script = ExtResource( 1 )
 wait_time = 0.5
 autostart = true
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2( 5, 5 )
-
 [node name="Tounge" type="Sprite" parent="."]
 texture = ExtResource( 3 )
 centered = false
