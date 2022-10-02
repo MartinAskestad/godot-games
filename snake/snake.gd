@@ -12,7 +12,7 @@ onready var segment_id = tile_set.find_tile_by_name("segment")
 onready var turn_id = tile_set.find_tile_by_name("turn")
 onready var apple_id = tile_set.find_tile_by_name("apple")
 
-onready var tounge = $Tounge
+onready var tongue = $Tongue
 
 func _ready() -> void:
   restart_game()
@@ -36,16 +36,16 @@ func draw_game() -> void:
     head_direction == Vector2.RIGHT,
     head_direction == Vector2.DOWN,
     head_direction == Vector2.DOWN or head_direction == Vector2.UP)
-  # draw tounge
-  tounge.position = map_to_world(body.front())
-  tounge.position += Vector2(4, 0) if head_direction == Vector2.RIGHT else Vector2.ZERO
-  tounge.position += Vector2(cell_size.x + 8, 0) if head_direction == Vector2.LEFT else Vector2.ZERO
-  tounge.position += Vector2(0, cell_size.y - 4) if head_direction == Vector2.UP else Vector2.ZERO
-  tounge.position += Vector2(0, -8) if head_direction == Vector2.DOWN else Vector2.ZERO
-  var tounge_rotaton = deg2rad(0) if (head_direction == Vector2.DOWN
+  # draw tongue
+  tongue.position = map_to_world(body.front())
+  tongue.position += Vector2(4, 0) if head_direction == Vector2.RIGHT else Vector2.ZERO
+  tongue.position += Vector2(cell_size.x + 8, 0) if head_direction == Vector2.LEFT else Vector2.ZERO
+  tongue.position += Vector2(0, cell_size.y - 4) if head_direction == Vector2.UP else Vector2.ZERO
+  tongue.position += Vector2(0, -8) if head_direction == Vector2.DOWN else Vector2.ZERO
+  var tongue_rotaton = deg2rad(0) if (head_direction == Vector2.DOWN
                                       or head_direction == Vector2.UP) else deg2rad(90)
-  tounge.rotation = tounge_rotaton
-  tounge.flip_v = head_direction == Vector2.DOWN or head_direction == Vector2.LEFT
+  tongue.rotation = tongue_rotaton
+  tongue.flip_v = head_direction == Vector2.DOWN or head_direction == Vector2.LEFT
   # draw tail
   var tail_direction = body.back() - body[-2]
   set_cellv(body.back(), tail_id,

@@ -2,7 +2,7 @@
 
 [ext_resource path="res://snake.gd" type="Script" id=1]
 [ext_resource path="res://snake_tileset.tres" type="TileSet" id=2]
-[ext_resource path="res://assets/tounge.png" type="Texture" id=3]
+[ext_resource path="res://assets/tongue.png" type="Texture" id=3]
 [ext_resource path="res://assets/Apple-bite-sound-effect.ogg" type="AudioStream" id=4]
 
 [node name="Snake" type="TileMap"]
@@ -15,7 +15,7 @@ script = ExtResource( 1 )
 wait_time = 0.5
 autostart = true
 
-[node name="Tounge" type="Sprite" parent="."]
+[node name="Tongue" type="Sprite" parent="."]
 texture = ExtResource( 3 )
 centered = false
 
