@@ -14,6 +14,8 @@ config/name="snake"
 config/description="A recreation of the classic game \"Snake\"."
 run/main_scene="res://Snake.tscn"
 config/icon="res://icon.png"
+config/macos_native_icon="res://app.icns"
+config/windows_native_icon="res://app.ico"
 
 [display]
 

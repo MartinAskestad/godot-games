@@ -1,7 +1,7 @@
 extends TileMap
 
 var body: Array = []
-var direction = Vector2.LEFT
+var direction: Vector2
 var ate = false
 var apple: Vector2
 var move_queued = false
@@ -12,6 +12,8 @@ onready var segment_id = tile_set.find_tile_by_name("segment")
 onready var turn_id = tile_set.find_tile_by_name("turn")
 onready var apple_id = tile_set.find_tile_by_name("apple")
 
+onready var tounge = $Tounge
+
 func _ready() -> void:
   restart_game()
   spawn_apple()
@@ -21,8 +23,8 @@ func restart_game() -> void:
   randomize()
   var screen_center = get_viewport().get_visible_rect().size * 0.5
   var center_of_map = world_to_map(screen_center)
-  body = [center_of_map + Vector2.LEFT, center_of_map, center_of_map + Vector2.RIGHT]
-  direction = Vector2.LEFT
+  body = [center_of_map + Vector2.UP, center_of_map, center_of_map + Vector2.DOWN]
+  direction = Vector2.UP
 
 func draw_game() -> void:
   clear()
@@ -34,6 +36,16 @@ func draw_game() -> void:
     head_direction == Vector2.RIGHT,
     head_direction == Vector2.DOWN,
     head_direction == Vector2.DOWN or head_direction == Vector2.UP)
+  # draw tounge
+  tounge.position = map_to_world(body.front())
+  tounge.position += Vector2(4, 0) if head_direction == Vector2.RIGHT else Vector2.ZERO
+  tounge.position += Vector2(cell_size.x + 8, 0) if head_direction == Vector2.LEFT else Vector2.ZERO
+  tounge.position += Vector2(0, cell_size.y - 4) if head_direction == Vector2.UP else Vector2.ZERO
+  tounge.position += Vector2(0, -8) if head_direction == Vector2.DOWN else Vector2.ZERO
+  var tounge_rotaton = deg2rad(0) if (head_direction == Vector2.DOWN
+                                      or head_direction == Vector2.UP) else deg2rad(90)
+  tounge.rotation = tounge_rotaton
+  tounge.flip_v = head_direction == Vector2.DOWN or head_direction == Vector2.LEFT
   # draw tail
   var tail_direction = body.back() - body[-2]
   set_cellv(body.back(), tail_id,
@@ -70,6 +82,7 @@ func _on_UpdateSnake_timeout() -> void:
   # check if ate apple
   if body.front() == apple:
     ate = true
+    $BiteApple.play()
     spawn_apple()
   # check if going of screen
   if (body.front().x < 0 or body.front().x > 14
@@ -100,5 +113,3 @@ func spawn_apple() -> void:
     apple_pos = Vector2(rnd % 15, (rnd - (rnd % 15)) / 15)
   apple = apple_pos
 
-func draw_apple() -> void:
-  set_cellv(apple, apple_id)
