@@ -8,7 +8,6 @@
 [node name="Snake" type="TileMap"]
 tile_set = ExtResource( 2 )
 format = 1
-tile_data = PoolIntArray( 655363, 4, 0 )
 script = ExtResource( 1 )
 
 [node name="UpdateSnake" type="Timer" parent="."]
