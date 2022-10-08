@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://court/fancy-court.png" type="Texture" id=1]
+[ext_resource path="res://ball/Ball.tscn" type="PackedScene" id=2]
+[ext_resource path="res://court/court.gd" type="Script" id=3]
+[ext_resource path="res://paddles/PlayerPaddle.tscn" type="PackedScene" id=4]
+[ext_resource path="res://paddles/OpponentPaddle.tscn" type="PackedScene" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 400, 10 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 24, 24 )
+
+[node name="Court" type="Sprite"]
+texture = ExtResource( 1 )
+centered = false
+script = ExtResource( 3 )
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+position = Vector2( 400, -10 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+shape = SubResource( 1 )
+
+[node name="BottomWall" type="StaticBody2D" parent="."]
+position = Vector2( 400, 610 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomWall"]
+shape = SubResource( 1 )
+
+[node name="PaddleBufferTopLeft" type="StaticBody2D" parent="."]
+position = Vector2( 24, 24 )
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleBufferTopLeft"]
+shape = SubResource( 2 )
+
+[node name="PaddleBufferBottomLeft" type="StaticBody2D" parent="."]
+position = Vector2( 24, 576 )
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleBufferBottomLeft"]
+shape = SubResource( 2 )
+
+[node name="PaddleBufferTopRight" type="StaticBody2D" parent="."]
+position = Vector2( 776, 24 )
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleBufferTopRight"]
+shape = SubResource( 2 )
+
+[node name="PaddleBufferBottomRight" type="StaticBody2D" parent="."]
+position = Vector2( 776, 576 )
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleBufferBottomRight"]
+shape = SubResource( 2 )
+
+[node name="Ball" parent="." instance=ExtResource( 2 )]
+position = Vector2( 400, 300 )
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="Ball"]
+rect = Rect2( -16, -16, 32, 32 )
+
+[node name="PlayerPaddle" parent="." instance=ExtResource( 4 )]
+position = Vector2( 30, 300 )
+
+[node name="OpponentPaddle" parent="." instance=ExtResource( 5 )]
+position = Vector2( 770, 300 )
+
+[node name="OpponentTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="screen_exited" from="Ball/VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
+[connection signal="timeout" from="OpponentTimer" to="." method="_on_OpponentTimer_timeout"]
