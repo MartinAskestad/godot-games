@@ -13,6 +13,8 @@ config_version=4
 config/name="pong"
 config/description="A remake of the classic game \"Pong\"."
 config/icon="res://icon.png"
+config/macos_native_icon="res://app.icns"
+config/windows_native_icon="res://app.ico"
 
 [display]
 
