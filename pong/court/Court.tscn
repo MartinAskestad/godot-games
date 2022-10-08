@@ -1,16 +1,21 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://court/fancy-court.png" type="Texture" id=1]
 [ext_resource path="res://ball/Ball.tscn" type="PackedScene" id=2]
 [ext_resource path="res://court/court.gd" type="Script" id=3]
 [ext_resource path="res://paddles/PlayerPaddle.tscn" type="PackedScene" id=4]
 [ext_resource path="res://paddles/OpponentPaddle.tscn" type="PackedScene" id=5]
+[ext_resource path="res://court/Kenney Future.ttf" type="DynamicFontData" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 400, 10 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 24, 24 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 64
+font_data = ExtResource( 6 )
 
 [node name="Court" type="Sprite"]
 texture = ExtResource( 1 )
@@ -93,6 +98,26 @@ position = Vector2( 770, 300 )
 
 [node name="OpponentTimer" type="Timer" parent="."]
 autostart = true
+
+[node name="PlayerScore" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -64.0
+margin_top = 64.0
+margin_right = 26.0
+margin_bottom = 72.0
+custom_fonts/font = SubResource( 3 )
+text = "0"
+
+[node name="OpponentScore" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 24.0
+margin_top = 64.0
+margin_right = 26.0
+margin_bottom = 72.0
+custom_fonts/font = SubResource( 3 )
+text = "0"
 
 [connection signal="screen_exited" from="Ball/VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
 [connection signal="timeout" from="OpponentTimer" to="." method="_on_OpponentTimer_timeout"]
