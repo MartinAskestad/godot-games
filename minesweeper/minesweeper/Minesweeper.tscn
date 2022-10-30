@@ -1,0 +1,104 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://minesweeper/minesweeper_tiles.tres" type="TileSet" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends TileMap
+
+export(int) var mine_tile = 11
+export(int) var unexplored = 10
+export(int) var flag = 9
+
+var mines: Array = []
+var neighbors: Array = [Vector2.UP + Vector2.LEFT, Vector2.UP, Vector2.UP + Vector2.RIGHT,
+                        Vector2.LEFT, Vector2.RIGHT,
+                        Vector2.DOWN + Vector2.LEFT, Vector2.DOWN, Vector2.DOWN + Vector2.RIGHT]
+
+
+func _ready() -> void:
+  randomize()
+  reset()
+
+func reset() -> void:
+  mines.clear()
+  while len(mines) < 9:
+    var mine_pos := Vector2(randi() % 9, randi() % 9)
+    if mine_pos in mines:
+      continue
+    mines.push_back(mine_pos)
+  for x in 9:
+    for y in 9:
+      set_cellv(Vector2(x, y), unexplored)
+
+func _input(event: InputEvent) -> void:
+  var click: bool = event is InputEventMouseButton and event.pressed
+  var mouse_button_1: bool = click and event.button_index == BUTTON_LEFT
+  var mouse_button_2: bool = click and event.button_index == BUTTON_RIGHT
+  if mouse_button_1:
+    var mouse_position: Vector2 = event.position - position
+    var map_position = world_to_map(mouse_position)
+    var cell = get_cellv(map_position)
+    if cell == unexplored: # only register clicks on unexplored tiles
+      flip_tile(map_position, true, len(get_used_cells_by_id(unexplored)) == 81)
+  if mouse_button_2:
+    var mouse_position: Vector2 = event.position - position
+    var map_position = world_to_map(mouse_position)
+    toggle_flag(map_position)
+
+func toggle_flag(tile_pos: Vector2) -> void:
+  if get_cellv(tile_pos) == unexplored:
+    set_cellv(tile_pos, flag)
+  elif get_cellv(tile_pos) == flag:
+    set_cellv(tile_pos, unexplored)
+
+func flip_tile(tile_pos: Vector2, click: bool = false, first_click: bool = false) -> void:
+  var hit_mine: bool = tile_pos in mines
+  if hit_mine and click and first_click:
+    var new_mine_pos := Vector2(randi() % 9, randi() % 9)
+    while new_mine_pos in mines:
+      new_mine_pos = Vector2(randi() % 9, randi() % 9)
+    var first_mine_idx := mines.find(tile_pos)
+    mines[first_mine_idx] = new_mine_pos
+    hit_mine = false
+  if hit_mine and click:
+    set_cellv(tile_pos, mine_tile)
+    $GameOverTimer.start()
+    for mine in mines:
+      if get_cellv(mine) == unexplored:
+        set_cellv(mine, mine_tile)
+  if (not hit_mine or not click) and get_cellv(tile_pos) == 10:
+    var mine_count: int = count_adjacent_mines(tile_pos)
+    set_cellv(tile_pos, mine_count)
+    if mine_count == 0:
+      for neighbor in neighbors:
+        if get_cellv(neighbor + tile_pos) == unexplored and not neighbor + tile_pos in mines:
+          flip_tile(tile_pos + neighbor)
+  check_game_over()
+
+func count_adjacent_mines(tile_pos: Vector2) -> int:
+  var count: int = 0
+  for neighbor in neighbors:
+    if tile_pos + neighbor in mines:
+      count = count + 1
+  return count
+
+func check_game_over() -> void:
+  if len(get_used_cells_by_id(unexplored)) + len(get_used_cells_by_id(flag)) == len(mines):
+    $GameOverTimer.start()
+
+func _on_GameOverTimer_timeout() -> void:
+  reset()
+"
+
+[node name="Minesweeper" type="TileMap"]
+position = Vector2( 30, 30 )
+tile_set = ExtResource( 1 )
+format = 1
+tile_data = PoolIntArray( 0, 10, 0, 1, 10, 0, 2, 10, 0, 3, 10, 0, 4, 10, 0, 5, 10, 0, 6, 10, 0, 7, 10, 0, 8, 10, 0, 65536, 10, 0, 65537, 10, 0, 65538, 10, 0, 65539, 10, 0, 65540, 10, 0, 65541, 10, 0, 65542, 10, 0, 65543, 10, 0, 65544, 10, 0, 131072, 10, 0, 131073, 10, 0, 131074, 10, 0, 131075, 10, 0, 131076, 10, 0, 131077, 10, 0, 131078, 10, 0, 131079, 10, 0, 131080, 10, 0, 196608, 10, 0, 196609, 10, 0, 196610, 10, 0, 196611, 10, 0, 196612, 10, 0, 196613, 10, 0, 196614, 10, 0, 196615, 10, 0, 196616, 10, 0, 262144, 10, 0, 262145, 10, 0, 262146, 10, 0, 262147, 10, 0, 262148, 10, 0, 262149, 10, 0, 262150, 10, 0, 262151, 10, 0, 262152, 10, 0, 327680, 10, 0, 327681, 10, 0, 327682, 10, 0, 327683, 10, 0, 327684, 10, 0, 327685, 10, 0, 327686, 10, 0, 327687, 10, 0, 327688, 10, 0, 393216, 10, 0, 393217, 10, 0, 393218, 10, 0, 393219, 10, 0, 393220, 10, 0, 393221, 10, 0, 393222, 10, 0, 393223, 10, 0, 393224, 10, 0, 458752, 10, 0, 458753, 10, 0, 458754, 10, 0, 458755, 10, 0, 458756, 10, 0, 458757, 10, 0, 458758, 10, 0, 458759, 10, 0, 458760, 10, 0, 524288, 10, 0, 524289, 10, 0, 524290, 10, 0, 524291, 10, 0, 524292, 10, 0, 524293, 10, 0, 524294, 10, 0, 524295, 10, 0, 524296, 10, 0 )
+script = SubResource( 1 )
+
+[node name="GameOverTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="GameOverTimer" to="." method="_on_GameOverTimer_timeout"]
